@@ -11,15 +11,11 @@ export default function App() {
   const [query, setQuery] = useState("");
 
   const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
 
-  // const [watched, setWatched] = useState([]);
-  const [watched, setWatched] = useState(function () {
-    const storedValue = localStorage.getItem("watched");
-    return JSON.parse(storedValue);
-  });
   // const tempQuery = "interstellar";
 
   function handleSelectMovie(id) {
@@ -31,20 +27,11 @@ export default function App() {
 
   function handleWatched(movie) {
     setWatched((watched) => [...watched, movie]);
-
-    // localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
-
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
 
-  useEffect(
-    function () {
-      localStorage.setItem("watched", JSON.stringify(watched));
-    },
-    [watched]
-  );
   useEffect(
     function () {
       const controller = new AbortController();
@@ -388,7 +375,7 @@ function WatchedSummary({ watched }) {
         <div>
           <p>
             <span>#️⃣</span>
-            <span>{watched.length}movies</span>
+            <span>{watched.length} movies</span>
           </p>
           <p>
             <span>⭐️</span>
@@ -400,7 +387,7 @@ function WatchedSummary({ watched }) {
           </p>
           <p>
             <span>⏳</span>
-            <span>{avgRuntime.toFixed(1)}min</span>
+            <span>{avgRuntime} min</span>
           </p>
         </div>
       }
@@ -444,9 +431,7 @@ function WatchedMovie({ movie, onDeleteWatched }) {
         <button
           className="btn-delete"
           onClick={() => onDeleteWatched(movie.imdbID)}
-        >
-          <b>&#x2716;</b>
-        </button>
+        ></button>
       </div>
     </li>
   );
